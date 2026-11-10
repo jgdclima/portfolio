@@ -1,0 +1,79 @@
+---
+import { SITE, withBase } from '../config/site';
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-col">
+      <p class="footer-brand">
+        <strong>{SITE.name}</strong> · Personal Projects & Essays
+      </p>
+      <p class="footer-homage">
+        Designed with a minimalist Brazilian modernist palette — emerald, golden ochre & Atlantic navy.
+      </p>
+    </div>
+
+    <div class="footer-links">
+      <a href={withBase('/')} class="footer-link">Overview</a>
+      <a href={withBase('/projects')} class="footer-link">Projects</a>
+      <a href={withBase('/blog')} class="footer-link">Blog</a>
+      {
+        SITE.socials.slice(0, 3).map((social) => (
+          <a
+            href={social.href}
+            class="footer-link"
+            target={social.external ? '_blank' : undefined}
+            rel={social.external ? 'noopener noreferrer' : undefined}
+          >
+            {social.label}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border-subtle);
+    padding: 2.25rem 0 2.75rem;
+    background-color: var(--bg-elevated);
+    margin-top: auto;
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-brand {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 0.2rem;
+  }
+
+  .footer-homage {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-link {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .footer-link:hover {
+    color: var(--accent-green);
+  }
+</style>
