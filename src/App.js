@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Header from './Header';
 import Banner from './Banner';
-import Button from './Button';
-import Tabs from './Tabs'
+import Tabs from './Tabs';
 
 class App extends Component {
   render() {
@@ -14,18 +11,8 @@ class App extends Component {
           <div label="JL" hierarchy="primary">
             <Banner></Banner>
           </div>
-          <div label="Projects" hierarchy="secondary">
-            Projects
-          </div>
-          <div label="Creative" hierarchy="secondary">
-            Creative
-          </div>
-          <div label="Case Studies" hierarchy="secondary">
-            Case Studies
-          </div>
-          <div label="Resume" hierarchy="secondary">
-            Resume
-          </div>
+          {/* Template / placeholder pages (Projects, Creative, Case Studies, Resume)
+              are not rendered on the website until real content is added */}
         </Tabs>
       </div>
     );

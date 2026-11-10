@@ -5,15 +5,30 @@ import Tab from './Tab';
 
 class Tabs extends Component {
   static propTypes = {
-    children: PropTypes.instanceOf(Array).isRequired,
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node,
+    ]).isRequired,
   }
 
   constructor(props) {
     super(props);
 
+    const validChildren = this.getValidChildren(props.children);
     this.state = {
-      activeTab: this.props.children[0].props.label,
+      activeTab: validChildren.length > 0 && validChildren[0].props ? validChildren[0].props.label : '',
     };
+  }
+
+  getValidChildren(children) {
+    return React.Children.toArray(children).filter(
+      (child) =>
+        child &&
+        child.props &&
+        child.props.label &&
+        !child.props.placeholder &&
+        !child.props.isPlaceholder
+    );
   }
 
   onClickTabItem = (tab) => {
@@ -31,11 +46,13 @@ class Tabs extends Component {
       }
     } = this;
 
+    const validChildren = this.getValidChildren(children);
+
     return (
       <div className="tabs">
         <ol className="tab-list">
-          {children.map((child) => {
-            const { label ,hierarchy} = child.props;
+          {validChildren.map((child) => {
+            const { label, hierarchy } = child.props;
 
             return (
               <Tab
@@ -49,7 +66,7 @@ class Tabs extends Component {
           })}
         </ol>
         <div className="tab-content">
-          {children.map((child) => {
+          {validChildren.map((child) => {
             if (child.props.label !== activeTab) return undefined;
             return child.props.children;
           })}
