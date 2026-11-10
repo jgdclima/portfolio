@@ -1,34 +1,17 @@
 {
-  "name": "website",
-  "version": "0.1.0",
+  "name": "joao-lima-portfolio",
+  "type": "module",
+  "version": "1.0.0",
   "private": true,
-  "homepage": "https://github.com/jgdclima/jgdclima.github.io",
-  "dependencies": {
-    "@babel/cli": "^7.4.3",
-    "@babel/core": "^7.4.3",
-    "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "2.1.8"
-  },
+  "description": "Personal website, project showcase, and essays on game design & fiction literature by João Lima.",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "yarn run build",
-    "deploy": "gh-pages -d build"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
-  "devDependencies": {
-    "gh-pages": "^2.0.1"
+  "dependencies": {
+    "astro": "^5.4.0"
   }
 }

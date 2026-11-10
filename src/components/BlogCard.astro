@@ -1,0 +1,173 @@
+---
+import { withBase } from '../config/site';
+
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+  pubDate: Date;
+  category: 'Game Design' | 'Fiction & Literature' | 'Notes';
+  readingTime?: string;
+  subjectTitle?: string;
+  subjectCreator?: string;
+  externalUrl?: string;
+  externalPlatform?: string;
+}
+
+const {
+  id,
+  title,
+  description,
+  pubDate,
+  category,
+  readingTime,
+  subjectTitle,
+  subjectCreator,
+  externalUrl,
+  externalPlatform,
+} = Astro.props;
+
+const isExternal = Boolean(externalUrl);
+const href = isExternal ? externalUrl! : withBase(`/blog/${id}`);
+
+const formattedDate = pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const categoryBadgeClass =
+  category === 'Game Design'
+    ? 'badge--green'
+    : category === 'Fiction & Literature'
+      ? 'badge--gold'
+      : 'badge--navy';
+---
+
+<article class="blog-card" data-category={category}>
+  <a
+    href={href}
+    class="blog-card__link"
+    target={isExternal ? '_blank' : undefined}
+    rel={isExternal ? 'noopener noreferrer' : undefined}
+  >
+    <div class="blog-card__top">
+      <div class="blog-card__tags">
+        <span class:list={['badge', categoryBadgeClass]}>{category}</span>
+        {
+          isExternal && (
+            <span class="badge badge--navy">
+              {externalPlatform || 'External'} ↗
+            </span>
+          )
+        }
+      </div>
+      <div class="blog-card__date-meta">
+        <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+        {readingTime && <span class="meta-sep">·</span>}
+        {readingTime && <span>{readingTime}</span>}
+      </div>
+    </div>
+
+    <h3 class="blog-card__title">
+      {title}
+    </h3>
+
+    {
+      subjectTitle && (
+        <p class="blog-card__subject">
+          <span class="subject-label">On:</span> <em>{subjectTitle}</em>
+          {subjectCreator && <span> — {subjectCreator}</span>}
+        </p>
+      )
+    }
+
+    <p class="blog-card__desc">{description}</p>
+
+    <span class="blog-card__read">
+      {isExternal ? `Read on ${externalPlatform || 'External Site'} ↗` : 'Read essay →'}
+    </span>
+  </a>
+</article>
+
+<style>
+  .blog-card {
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .blog-card:first-child {
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .blog-card__link {
+    display: block;
+    padding: 1.45rem 0.75rem;
+    margin: 0 -0.75rem;
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+  }
+
+  .blog-card__link:hover {
+    background-color: var(--bg-elevated);
+  }
+
+  .blog-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .blog-card__tags {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .blog-card__date-meta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .blog-card__title {
+    font-size: 1.32rem;
+    margin-bottom: 0.35rem;
+    transition: color var(--transition-fast);
+  }
+
+  .blog-card__link:hover .blog-card__title {
+    color: var(--accent-green);
+  }
+
+  .blog-card__subject {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .subject-label {
+    color: var(--accent-gold);
+    font-weight: 600;
+  }
+
+  .blog-card__desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .blog-card__read {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    font-weight: 500;
+    color: var(--accent-green);
+  }
+</style>

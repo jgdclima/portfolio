@@ -1,0 +1,58 @@
+---
+interface Props {
+  variant?: 'mark' | 'divider';
+  size?: number;
+}
+
+const { variant = 'mark', size = 28 } = Astro.props;
+---
+
+{
+  variant === 'mark' ? (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 36 36"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      class="bulcao-mark"
+    >
+      {/* Athos Bulcão-inspired modernist tile geometry in Brazilian Emerald, Gold, and Atlantic Navy */}
+      <rect x="2" y="2" width="32" height="32" rx="6" fill="var(--accent-green)" />
+      <path d="M18 5L31 18L18 31L5 18L18 5Z" fill="var(--accent-gold-bright)" />
+      <circle cx="18" cy="18" r="6.5" fill="var(--bg-primary)" />
+      <path
+        d="M13.5 18.8C16 17.2 20 17.2 22.5 18.8"
+        stroke="var(--accent-green)"
+        stroke-width="1.8"
+        stroke-linecap="round"
+      />
+    </svg>
+  ) : (
+    <div class="bulcao-divider" aria-hidden="true">
+      <svg width="84" height="14" viewBox="0 0 84 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 1L13 7L7 13L1 7L7 1Z" fill="var(--accent-green)" />
+        <line x1="20" y1="7" x2="34" y2="7" stroke="var(--border-strong)" stroke-width="1.2" />
+        <circle cx="42" cy="7" r="3.5" fill="var(--accent-gold-bright)" />
+        <line x1="50" y1="7" x2="64" y2="7" stroke="var(--border-strong)" stroke-width="1.2" />
+        <path d="M77 1L83 7L77 13L71 7L77 1Z" fill="var(--accent-navy)" />
+      </svg>
+    </div>
+  )
+}
+
+<style>
+  .bulcao-mark {
+    flex-shrink: 0;
+    transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .bulcao-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2.25rem 0;
+    opacity: 0.85;
+  }
+</style>
