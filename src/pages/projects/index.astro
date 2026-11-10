@@ -4,9 +4,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { withBase } from '../../config/site';
 
-const projects = (await getCollection('projects')).sort(
-  (a, b) => a.data.order - b.data.order
-);
+let projects: any[] = [];
+try {
+  projects = (await getCollection('projects')).sort(
+    (a, b) => a.data.order - b.data.order
+  );
+} catch (_) {}
 
 const categories = ['All', ...Array.from(new Set(projects.map((p) => p.data.category)))];
 ---
@@ -20,7 +23,7 @@ const categories = ['All', ...Array.from(new Set(projects.map((p) => p.data.cate
     <span class="section-kicker">01 · Directory</span>
     <h1 class="page-title">Personal Projects</h1>
     <p class="page-lead">
-      A curated index of software systems, narrative design tools, and interactive prototypes. Each card links either to an on-site design write-up or directly to the source repository.
+      A curated index of software systems, narrative design tools, and interactive prototypes. Each project links either to an on-site design write-up or directly to the source repository.
     </p>
 
     {
@@ -41,24 +44,41 @@ const categories = ['All', ...Array.from(new Set(projects.map((p) => p.data.cate
     }
   </header>
 
-  <section class="projects-grid" id="projects-list" aria-label="Projects list">
-    {
-      projects.map((project) => (
-        <ProjectCard
-          id={project.id}
-          title={project.data.title}
-          summary={project.data.summary}
-          category={project.data.category}
-          tags={project.data.tags}
-          year={project.data.year}
-          status={project.data.status}
-          repoUrl={project.data.repoUrl}
-          demoUrl={project.data.demoUrl}
-          hasWriteup={project.data.hasWriteup}
-        />
-      ))
-    }
-  </section>
+  {
+    projects.length > 0 ? (
+      <section class="projects-grid" id="projects-list" aria-label="Projects list">
+        {
+          projects.map((project) => (
+            <ProjectCard
+              id={project.id}
+              title={project.data.title}
+              summary={project.data.summary}
+              category={project.data.category}
+              tags={project.data.tags}
+              year={project.data.year}
+              status={project.data.status}
+              repoUrl={project.data.repoUrl}
+              demoUrl={project.data.demoUrl}
+              hasWriteup={project.data.hasWriteup}
+            />
+          ))
+        }
+      </section>
+    ) : (
+      <section class="empty-state-card" aria-label="No projects published yet">
+        <div class="empty-state-card__badge">Work in progress</div>
+        <h2 class="empty-state-card__title">Projects in Development</h2>
+        <p class="empty-state-card__text">
+          I am currently working on software tools, narrative engines, and game mechanics prototypes. As projects reach a milestone or are open-sourced, detailed write-ups and links will be added here.
+        </p>
+        <div class="empty-state-card__cta">
+          <a href="https://github.com/jgdclima" target="_blank" rel="noopener noreferrer" class="action-btn">
+            View repositories on GitHub ↗
+          </a>
+        </div>
+      </section>
+    )
+  }
 </BaseLayout>
 
 <script is:inline>
@@ -151,5 +171,57 @@ const categories = ['All', ...Array.from(new Set(projects.map((p) => p.data.cate
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.25rem;
+  }
+
+  .empty-state-card {
+    background-color: var(--bg-elevated);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-md);
+    padding: 2.25rem 2rem;
+    max-width: 680px;
+  }
+
+  .empty-state-card__badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent-green);
+    background-color: var(--accent-green-soft);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .empty-state-card__title {
+    font-family: var(--font-serif);
+    font-size: 1.45rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .empty-state-card__text {
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    margin-bottom: 1.4rem;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  .action-btn:hover {
+    border-color: var(--accent-green);
+    color: var(--accent-green);
   }
 </style>

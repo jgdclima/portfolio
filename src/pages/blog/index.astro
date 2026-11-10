@@ -4,9 +4,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import BlogCard from '../../components/BlogCard.astro';
 import { SITE, withBase } from '../../config/site';
 
-const posts = (await getCollection('blog'))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+let posts: any[] = [];
+try {
+  posts = (await getCollection('blog'))
+    .filter((post) => !post.data.draft)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+} catch (_) {}
 
 const categories = ['All', 'Game Design', 'Fiction & Literature'];
 
@@ -27,20 +30,22 @@ const mediumLink = SITE.socials.find((s) => s.label === 'Medium')?.href;
     </p>
 
     <div class="blog-toolbar">
-      <div class="filter-bar" role="toolbar" aria-label="Filter essays by topic">
-        {
-          categories.map((cat, idx) => (
-            <button
-              type="button"
-              id={`blog-filter-${cat.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
-              class:list={['filter-btn', { 'filter-btn--active': idx === 0 }]}
-              data-filter={cat}
-            >
-              {cat}
-            </button>
-          ))
-        }
-      </div>
+      {
+        posts.length > 0 && (
+          <div class="filter-bar" role="toolbar" aria-label="Filter essays by topic">
+            {categories.map((cat, idx) => (
+              <button
+                type="button"
+                id={`blog-filter-${cat.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
+                class:list={['filter-btn', { 'filter-btn--active': idx === 0 }]}
+                data-filter={cat}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        )
+      }
 
       <div class="syndication-links">
         <span class="syndication-label">Also publishing on:</span>
@@ -62,24 +67,48 @@ const mediumLink = SITE.socials.find((s) => s.label === 'Medium')?.href;
     </div>
   </header>
 
-  <section id="blog-posts-list" aria-label="Essays and reviews list">
-    {
-      posts.map((post) => (
-        <BlogCard
-          id={post.id}
-          title={post.data.title}
-          description={post.data.description}
-          pubDate={post.data.pubDate}
-          category={post.data.category}
-          readingTime={post.data.readingTime}
-          subjectTitle={post.data.subjectTitle}
-          subjectCreator={post.data.subjectCreator}
-          externalUrl={post.data.externalUrl}
-          externalPlatform={post.data.externalPlatform}
-        />
-      ))
-    }
-  </section>
+  {
+    posts.length > 0 ? (
+      <section id="blog-posts-list" aria-label="Essays and reviews list">
+        {
+          posts.map((post) => (
+            <BlogCard
+              id={post.id}
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              category={post.data.category}
+              readingTime={post.data.readingTime}
+              subjectTitle={post.data.subjectTitle}
+              subjectCreator={post.data.subjectCreator}
+              externalUrl={post.data.externalUrl}
+              externalPlatform={post.data.externalPlatform}
+            />
+          ))
+        }
+      </section>
+    ) : (
+      <section class="empty-state-card" aria-label="No essays published yet">
+        <div class="empty-state-card__badge">In the notebook</div>
+        <h2 class="empty-state-card__title">Essays Forthcoming</h2>
+        <p class="empty-state-card__text">
+          I am currently drafting short essays focused on game design mechanics, environmental pacing, and fiction reviews (including Latin American literature). Articles will appear here as they are published.
+        </p>
+        <div class="empty-state-card__cta">
+          {substackLink && (
+            <a href={substackLink} target="_blank" rel="noopener noreferrer" class="action-btn">
+              Follow on Substack ↗
+            </a>
+          )}
+          {mediumLink && (
+            <a href={mediumLink} target="_blank" rel="noopener noreferrer" class="action-btn">
+              Follow on Medium ↗
+            </a>
+          )}
+        </div>
+      </section>
+    )
+  }
 </BaseLayout>
 
 <script is:inline>
@@ -110,7 +139,8 @@ const mediumLink = SITE.socials.find((s) => s.label === 'Medium')?.href;
 <style>
   .page-header {
     padding-bottom: 1.75rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid var(--border-subtle);
   }
 
   .back-link {
@@ -200,6 +230,64 @@ const mediumLink = SITE.socials.find((s) => s.label === 'Medium')?.href;
 
   .synd-pill:hover {
     background-color: var(--accent-green-soft);
+    color: var(--accent-green);
+  }
+
+  .empty-state-card {
+    background-color: var(--bg-elevated);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-md);
+    padding: 2.25rem 2rem;
+    max-width: 680px;
+  }
+
+  .empty-state-card__badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent-gold);
+    background-color: var(--accent-gold-soft);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .empty-state-card__title {
+    font-family: var(--font-serif);
+    font-size: 1.45rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .empty-state-card__text {
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    margin-bottom: 1.4rem;
+  }
+
+  .empty-state-card__cta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  .action-btn:hover {
+    border-color: var(--accent-green);
     color: var(--accent-green);
   }
 </style>

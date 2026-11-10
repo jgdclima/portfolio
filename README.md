@@ -29,7 +29,7 @@ npm run preview
 Edit [`src/config/site.ts`](./src/config/site.ts) to update your tagline, bio paragraphs, focus areas, and social links (GitHub, Substack, Medium, LinkedIn, Email).
 
 ### 2. Adding a Blog Essay or Review (`src/content/blog/`)
-Create a `.md` file in `src/content/blog/`.
+To publish an essay, copy one of the reference templates in [`src/content/_templates/blog/`](./src/content/_templates/blog/) into `src/content/blog/your-post-slug.md`. (Files inside `_templates/` are ignored during build so they don't show up on your live site until you copy or create a file directly in `src/content/blog/`).
 
 - **On-site Markdown Essay** (renders at `/blog/<filename>`):
   ```markdown
@@ -61,7 +61,7 @@ Create a `.md` file in `src/content/blog/`.
   ```
 
 ### 3. Adding a Personal Project (`src/content/projects/`)
-Create a `.md` file in `src/content/projects/`:
+To publish a project, copy one of the reference templates in [`src/content/_templates/projects/`](./src/content/_templates/projects/) into `src/content/projects/your-project-slug.md`. (Files inside `_templates/` are ignored during build so they don't show up on your live site until you copy or create a file directly in `src/content/projects/`).
 
 ```markdown
 ---
