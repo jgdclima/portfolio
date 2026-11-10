@@ -1,0 +1,73 @@
+.Header {
+  width: 100vw;
+  padding: 10px 50px;
+  background-color: #000;
+}
+
+.tabs {
+  list-style: none;
+  width: 100%;
+}
+
+.tab-list-item {
+  display: inline-block;
+  list-style: none;
+  margin-bottom: -1px;
+  padding: 5px 5%;
+}
+.tab-list-item.primary {
+  float: left;
+}
+.tab-list-item.secondary {
+  float: right;
+}
+
+.tab-list-active {
+  background-color: white;
+  border: solid #ccc;
+  border-width: 1px 1px 0 1px;
+}
+
+.button.primary {
+  float: left;
+}
+.button.secondary {
+  float: right;
+}
+
+.banner {
+  width: 100vw;
+  padding: 100px;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/*# sourceMappingURL=App.css.map */
