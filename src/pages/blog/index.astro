@@ -1,0 +1,205 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import { SITE, withBase } from '../../config/site';
+
+const posts = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const categories = ['All', 'Game Design', 'Fiction & Literature'];
+
+const substackLink = SITE.socials.find((s) => s.label === 'Substack')?.href;
+const mediumLink = SITE.socials.find((s) => s.label === 'Medium')?.href;
+---
+
+<BaseLayout
+  title="Essays & Reviews"
+  description="Short essays on game design mechanics and fiction literature reviews by João Lima."
+>
+  <header class="page-header">
+    <a href={withBase('/')} class="back-link" id="blog-back-home">← Back to overview</a>
+    <span class="section-kicker">02 · Notebook & Criticism</span>
+    <h1 class="page-title">Essays & Literature Reviews</h1>
+    <p class="page-lead">
+      Short critical essays examining game design systems, interactive storytelling, and fiction literature reviews. Essays live either as Markdown documents in this repository or link out to Substack and Medium.
+    </p>
+
+    <div class="blog-toolbar">
+      <div class="filter-bar" role="toolbar" aria-label="Filter essays by topic">
+        {
+          categories.map((cat, idx) => (
+            <button
+              type="button"
+              id={`blog-filter-${cat.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
+              class:list={['filter-btn', { 'filter-btn--active': idx === 0 }]}
+              data-filter={cat}
+            >
+              {cat}
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="syndication-links">
+        <span class="syndication-label">Also publishing on:</span>
+        {
+          substackLink && (
+            <a href={substackLink} target="_blank" rel="noopener noreferrer" class="synd-pill">
+              Substack ↗
+            </a>
+          )
+        }
+        {
+          mediumLink && (
+            <a href={mediumLink} target="_blank" rel="noopener noreferrer" class="synd-pill">
+              Medium ↗
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </header>
+
+  <section id="blog-posts-list" aria-label="Essays and reviews list">
+    {
+      posts.map((post) => (
+        <BlogCard
+          id={post.id}
+          title={post.data.title}
+          description={post.data.description}
+          pubDate={post.data.pubDate}
+          category={post.data.category}
+          readingTime={post.data.readingTime}
+          subjectTitle={post.data.subjectTitle}
+          subjectCreator={post.data.subjectCreator}
+          externalUrl={post.data.externalUrl}
+          externalPlatform={post.data.externalPlatform}
+        />
+      ))
+    }
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (() => {
+    const buttons = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('#blog-posts-list .blog-card');
+    if (!buttons.length || !cards.length) return;
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+        buttons.forEach((b) => b.classList.remove('filter-btn--active'));
+        btn.classList.add('filter-btn--active');
+
+        cards.forEach((card) => {
+          const cat = card.getAttribute('data-category');
+          if (filter === 'All' || cat === filter) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  })();
+</script>
+
+<style>
+  .page-header {
+    padding-bottom: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .back-link:hover {
+    color: var(--accent-green);
+  }
+
+  .page-title {
+    margin-top: 0.3rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-lead {
+    font-size: 1.04rem;
+    max-width: 68ch;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+  }
+
+  .blog-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter-btn {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .filter-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+  }
+
+  .filter-btn--active {
+    background-color: var(--accent-green-soft);
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+    font-weight: 500;
+  }
+
+  .syndication-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .syndication-label {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--text-muted);
+  }
+
+  .synd-pill {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    background-color: var(--accent-gold-soft);
+    color: var(--accent-gold);
+    font-weight: 500;
+  }
+
+  .synd-pill:hover {
+    background-color: var(--accent-green-soft);
+    color: var(--accent-green);
+  }
+</style>

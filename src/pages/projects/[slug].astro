@@ -1,0 +1,161 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../config/site';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects
+    .filter((project) => project.data.hasWriteup)
+    .map((project) => ({
+      params: { slug: project.id },
+      props: { project },
+    }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<BaseLayout
+  title={project.data.title}
+  description={project.data.summary}
+  narrow={true}
+>
+  <article class="project-article">
+    <header class="article-header">
+      <a href={withBase('/projects')} class="back-link">← All personal projects</a>
+
+      <div class="article-meta">
+        <span class="badge badge--green">{project.data.category}</span>
+        <span class="badge badge--gold">{project.data.status}</span>
+        <span class="article-year">{project.data.year}</span>
+      </div>
+
+      <h1 class="article-title">{project.data.title}</h1>
+      <p class="article-summary">{project.data.summary}</p>
+
+      <div class="article-links">
+        {
+          project.data.tags.length > 0 && (
+            <ul class="tag-list">
+              {project.data.tags.map((tag) => (
+                <li class="tag-item">{tag}</li>
+              ))}
+            </ul>
+          )
+        }
+
+        <div class="external-buttons">
+          {
+            project.data.repoUrl && (
+              <a
+                href={project.data.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="ext-btn"
+              >
+                Source on GitHub ↗
+              </a>
+            )
+          }
+          {
+            project.data.demoUrl && (
+              <a
+                href={project.data.demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="ext-btn ext-btn--primary"
+              >
+                Launch Demo ↗
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-header {
+    padding-bottom: 1.75rem;
+    margin-bottom: 2.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .back-link {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .back-link:hover {
+    color: var(--accent-green);
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+  }
+
+  .article-year {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--text-muted);
+  }
+
+  .article-title {
+    margin-bottom: 0.8rem;
+  }
+
+  .article-summary {
+    font-size: 1.08rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 1.35rem;
+  }
+
+  .article-links {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .external-buttons {
+    display: flex;
+    gap: 0.65rem;
+  }
+
+  .ext-btn {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  .ext-btn:hover {
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+  }
+
+  .ext-btn--primary {
+    background-color: var(--accent-green-soft);
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+  }
+</style>
