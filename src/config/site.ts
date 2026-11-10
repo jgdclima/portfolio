@@ -11,7 +11,7 @@ export const SITE = {
   role: 'Software, Quality, User Experience, Process Optimization',
   location: 'Vancouver, BC · Building & writing across code, games, and fiction',
   tagline:
-    'This is my little home for side projects, thought experiments, and essays exploring game design, narrative fiction, and other tangential rabbit holes. Who knows where we\'ll end up?'
+    'This is my little home for side projects, thought experiments, and essays exploring game design, narrative fiction, and other tangential rabbit holes. Who knows where we\'ll end up?',
   bioParagraphs: [
     'I am a tech and interactive systems (with an emphasis in games) nerd from Brazil. By day, I design/build/analyse software systems; outside of work, I spend my time brainstorming prototyping interactive ideas, and dissecting why some experiences feel so much more engaging than others.',
     'This site serves as a high-level hub for two ongoing threads of my work: technical & creative projects, and short critical essays on game design and narrative.',
